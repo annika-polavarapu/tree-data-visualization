@@ -1,0 +1,22 @@
+# Node modules
+node_modules/
+
+# Next.js build output
+.next/
+out/
+
+# Logs and debug files
+*.log
+
+# System files
+.DS_Store
+
+# Next.js environment file (auto-generated)
+next-env.d.ts
+
+# Editor settings 
+.vscode/
+.idea/
+
+# Tailwind/PostCSS cache 
+.postcssrc
