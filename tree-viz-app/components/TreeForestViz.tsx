@@ -12,20 +12,22 @@ const TreeIcon = ({ size, color }) => (
   >
     {/* Organic tree shape with multiple layers */}
     <path
-      d="M12 2C8 7 3 10 3 16C3 22 21 22 21 16C21 10 16 7 12 2Z"
-      fill={`url(#gradient-${color})`}
+      d="M12 2C7 8 2 12 2 18C2 24 22 24 22 18C22 12 17 8 12 2Z"
+      fill={color}
       stroke="darkgreen"
       strokeWidth="0.5"
+      opacity="0.9"
     />
     <path
-      d="M12 8C9 12 6 14 6 18C6 22 18 22 18 18C18 14 15 12 12 8Z"
-      fill={`url(#gradient2-${color})`}
+      d="M12 7C8 12 4 15 4 20C4 25 20 25 20 20C20 15 16 12 12 7Z"
+      fill={color}
       stroke="darkgreen"
       strokeWidth="0.5"
+      opacity="0.95"
     />
     <path
-      d="M12 14C10 17 8 18 8 21C8 24 16 24 16 21C16 18 14 17 12 14Z"
-      fill={`url(#gradient3-${color})`}
+      d="M12 12C9 16 6 18 6 22C6 26 18 26 18 22C18 18 15 16 12 12Z"
+      fill={color}
       stroke="darkgreen"
       strokeWidth="0.5"
     />
@@ -37,21 +39,7 @@ const TreeIcon = ({ size, color }) => (
       height="10"
       fill="#8B4513"
     />
-    {/* Gradients for tree layers */}
-    <defs>
-      <linearGradient id={`gradient-${color}`} x1="12" y1="2" x2="12" y2="22" gradientUnits="userSpaceOnUse">
-        <stop offset="0" stopColor={color} />
-        <stop offset="1" stopColor="darkgreen" />
-      </linearGradient>
-      <linearGradient id={`gradient2-${color}`} x1="12" y1="8" x2="12" y2="22" gradientUnits="userSpaceOnUse">
-        <stop offset="0" stopColor={color} />
-        <stop offset="1" stopColor="darkgreen" />
-      </linearGradient>
-      <linearGradient id={`gradient3-${color}`} x1="12" y1="14" x2="12" y2="24" gradientUnits="userSpaceOnUse">
-        <stop offset="0" stopColor={color} />
-        <stop offset="1" stopColor="darkgreen" />
-      </linearGradient>
-    </defs>
+    {/* No gradients needed anymore */}
   </svg>
 );
 
@@ -108,9 +96,30 @@ const TreeForestViz = () => {
 
   const getTreeColor = (count) => {
     const maxCount = Math.max(...treeData.map(d => d.count));
-    // Enhanced color contrast - using more dramatic color shifts
-    const intensity = Math.floor((count / maxCount) * 200); // Increased range
-    return `rgb(${2 + intensity}, ${10 + intensity}, ${20})`; // More dramatic green variation
+    const ratio = count / maxCount;
+    
+    // Create more distinctive color ranges based on population size
+    if (ratio > 0.9) {
+        return '#004B00';  // Darkest green (90-100%)
+      } else if (ratio > 0.8) {
+        return '#006400';  // Very dark green (80-90%)
+      } else if (ratio > 0.7) {
+        return '#008000';  // Dark green (70-80%)
+      } else if (ratio > 0.6) {
+        return '#228B22';  // Forest green (60-70%)
+      } else if (ratio > 0.5) {
+        return '#32CD32';  // Lime green (50-60%)
+      } else if (ratio > 0.4) {
+        return '#90EE90';  // Light green (40-50%)
+      } else if (ratio > 0.3) {
+        return '#98FB98';  // Pale green (30-40%)
+      } else if (ratio > 0.2) {
+        return '#B4EEB4';  // Light mint (20-30%)
+      } else if (ratio > 0.1) {
+        return '#C1FFC1';  // Very light mint (10-20%)
+      } else {
+        return '#E0FFE0';  // Palest mint (0-10%)
+      }
   };
 
   const getTreeSize = (height) => {
@@ -129,9 +138,9 @@ const TreeForestViz = () => {
             {selectedGenus ? (
               <div className="space-y-2">
                 <h3 className="font-serif text-lg font-bold text-green-800">{selectedGenus.genus}</h3>
-                <p className="text-sm text-black">Population: {selectedGenus.count} trees</p>
-                <p className="text-sm text-black">Average Height: {selectedGenus.avgHeight.toFixed(1)} ft</p>
-                <p className="text-sm text-black">Species Diversity: {selectedGenus.speciesCount} varieties</p>
+                <p className="text-sm">Population: {selectedGenus.count} trees</p>
+                <p className="text-sm">Average Height: {selectedGenus.avgHeight.toFixed(1)} ft</p>
+                <p className="text-sm">Species Diversity: {selectedGenus.speciesCount} varieties</p>
               </div>
             ) : (
               <p className="text-sm italic text-green-800">Hover over trees to explore...</p>
