@@ -110,7 +110,7 @@ const TreeForestViz = () => {
     const maxCount = Math.max(...treeData.map(d => d.count));
     // Enhanced color contrast - using more dramatic color shifts
     const intensity = Math.floor((count / maxCount) * 200); // Increased range
-    return `rgb(${20 + intensity}, ${100 + intensity}, ${20})`; // More dramatic green variation
+    return `rgb(${2 + intensity}, ${10 + intensity}, ${20})`; // More dramatic green variation
   };
 
   const getTreeSize = (height) => {
@@ -129,9 +129,9 @@ const TreeForestViz = () => {
             {selectedGenus ? (
               <div className="space-y-2">
                 <h3 className="font-serif text-lg font-bold text-green-800">{selectedGenus.genus}</h3>
-                <p className="text-sm">Population: {selectedGenus.count} trees</p>
-                <p className="text-sm">Average Height: {selectedGenus.avgHeight.toFixed(1)} ft</p>
-                <p className="text-sm">Species Diversity: {selectedGenus.speciesCount} varieties</p>
+                <p className="text-sm text-black">Population: {selectedGenus.count} trees</p>
+                <p className="text-sm text-black">Average Height: {selectedGenus.avgHeight.toFixed(1)} ft</p>
+                <p className="text-sm text-black">Species Diversity: {selectedGenus.speciesCount} varieties</p>
               </div>
             ) : (
               <p className="text-sm italic text-green-800">Hover over trees to explore...</p>
