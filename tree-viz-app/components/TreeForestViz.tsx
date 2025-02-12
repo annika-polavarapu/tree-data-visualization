@@ -1,16 +1,17 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 import Papa from 'papaparse';
+import { Search, SortAsc, Info } from 'lucide-react';
 
-const TreeIcon = ({ size, color }) => (
+const TreeIcon = ({ size, color, isHighlighted }) => (
   <svg 
     width={size} 
     height={size * 1.4} 
     viewBox="0 0 24 34"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
+    className={`transition-transform duration-500 ${isHighlighted ? 'scale-110' : 'scale-100'}`}
   >
-    {/* Organic tree shape with multiple layers */}
     <path
       d="M12 2C7 8 2 12 2 18C2 24 22 24 22 18C22 12 17 8 12 2Z"
       fill={color}
@@ -31,7 +32,6 @@ const TreeIcon = ({ size, color }) => (
       stroke="darkgreen"
       strokeWidth="0.5"
     />
-    {/* Tree trunk */}
     <rect
       x="11"
       y="24"
@@ -39,13 +39,32 @@ const TreeIcon = ({ size, color }) => (
       height="10"
       fill="#8B4513"
     />
-    {/* No gradients needed anymore */}
   </svg>
 );
+
+// const ColorLegend = ({ getTreeColor }) => (
+//   <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm p-4 rounded-lg shadow-lg">
+//     <h4 className="text-sm font-semibold mb-2 text-black">Population Ranges</h4>
+//     <div className="space-y-1">
+//       {[9, 8, 7, 6, 5, 4, 3, 2, 1, 0].map(i => (
+//         <div key={i} className="flex items-center gap-2">
+//           <div 
+//             className="w-4 h-4 rounded"
+//             style={{ backgroundColor: getTreeColor(i * 0.1 + 0.05) }}
+//           />
+//           <span className="text-xs text-black">{i * 10}-{(i + 1) * 10}%</span>
+//         </div>
+//       ))}
+//     </div>
+//   </div>
+// );
 
 const TreeForestViz = () => {
   const [treeData, setTreeData] = useState([]);
   const [selectedGenus, setSelectedGenus] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [sortBy, setSortBy] = useState("count");
+  const [showLegend, setShowLegend] = useState(true);
   
   useEffect(() => {
     const loadData = async () => {
@@ -82,8 +101,7 @@ const TreeForestViz = () => {
             avgSpread: data.totalSpread / data.count,
             speciesCount: data.species.size
           }))
-          .filter(d => d.count > 0)
-          .sort((a, b) => b.count - a.count);
+          .filter(d => d.count > 0);
       
         setTreeData(processedData);
       } catch (error) {
@@ -98,57 +116,108 @@ const TreeForestViz = () => {
     const maxCount = Math.max(...treeData.map(d => d.count));
     const ratio = count / maxCount;
     
-    // Create more distinctive color ranges based on population size
     if (ratio > 0.9) {
-        return '#004B00';  // Darkest green (90-100%)
-      } else if (ratio > 0.8) {
-        return '#006400';  // Very dark green (80-90%)
-      } else if (ratio > 0.7) {
-        return '#008000';  // Dark green (70-80%)
-      } else if (ratio > 0.6) {
-        return '#228B22';  // Forest green (60-70%)
-      } else if (ratio > 0.5) {
-        return '#32CD32';  // Lime green (50-60%)
-      } else if (ratio > 0.4) {
-        return '#90EE90';  // Light green (40-50%)
-      } else if (ratio > 0.3) {
-        return '#98FB98';  // Pale green (30-40%)
-      } else if (ratio > 0.2) {
-        return '#B4EEB4';  // Light mint (20-30%)
-      } else if (ratio > 0.1) {
-        return '#C1FFC1';  // Very light mint (10-20%)
-      } else {
-        return '#E0FFE0';  // Palest mint (0-10%)
-      }
+      return '#004B00';
+    } else if (ratio > 0.8) {
+      return '#006400';
+    } else if (ratio > 0.7) {
+      return '#008000';
+    } else if (ratio > 0.6) {
+      return '#228B22';
+    } else if (ratio > 0.5) {
+      return '#32CD32';
+    } else if (ratio > 0.4) {
+      return '#90EE90';
+    } else if (ratio > 0.3) {
+      return '#98FB98';
+    } else if (ratio > 0.2) {
+      return '#B4EEB4';
+    } else if (ratio > 0.1) {
+      return '#C1FFC1';
+    } else {
+      return '#E0FFE0';
+    }
   };
 
   const getTreeSize = (height) => {
     const maxHeight = Math.max(...treeData.map(d => d.avgHeight));
-    // Slightly smaller base size to fit more trees
     return 16 + (height / maxHeight) * 48;
   };
+
+  const sortedAndFilteredTrees = [...treeData]
+    .filter(tree => 
+      tree.genus.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+    .sort((a, b) => {
+      switch (sortBy) {
+        case "height":
+          return b.avgHeight - a.avgHeight;
+        case "diversity":
+          return b.speciesCount - a.speciesCount;
+        case "spread":
+          return b.avgSpread - a.avgSpread;
+        default:
+          return b.count - a.count;
+      }
+    });
 
   return (
     <div className="max-w-6xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden">
       <div className="p-8">
         <h1 className="text-center text-3xl font-serif mb-8 text-black">Forest of Knowledge: UCB Campus Trees</h1>
         
-        <div className="relative min-h-[32rem] h-auto w-full rounded-lg p-6 bg-gradient-to-b from-sky-100 to-green-50">
+        {/* Controls */}
+        <div className="flex gap-4 mb-6">
+          <div className="relative flex-1">
+            <Search className="absolute left-3 top-2.5 text-gray-400" size={16} />
+            <input
+              type="text"
+              placeholder="Search genera..."
+              className="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-green-500"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
+          <select
+            className="px-4 py-2 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-green-500"
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value)}
+          >
+            <option value="count">Sort by Population</option>
+            <option value="height">Sort by Height</option>
+            <option value="diversity">Sort by Species Count</option>
+            <option value="spread">Sort by Canopy Spread</option>
+          </select>
+          {/* <button
+            className="p-2 rounded-lg border border-gray-200 hover:bg-gray-50"
+            onClick={() => setShowLegend(!showLegend)}
+          >
+            <Info size={20} className="text-gray-600" />
+          </button> */}
+        </div>
+        
+        <div className="relative min-h-[32rem] h-auto w-full rounded-lg p-6 bg-gradient-to-b from-sky-100 to-green-50 pt-32">
+          {/* Info Panel */}
           <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm p-4 rounded-lg shadow-lg">
             {selectedGenus ? (
               <div className="space-y-2">
                 <h3 className="font-serif text-lg font-bold text-green-800">{selectedGenus.genus}</h3>
-                <p className="text-sm">Population: {selectedGenus.count} trees</p>
-                <p className="text-sm">Average Height: {selectedGenus.avgHeight.toFixed(1)} ft</p>
-                <p className="text-sm">Species Diversity: {selectedGenus.speciesCount} varieties</p>
+                <p className="text-sm text-black">Population: {selectedGenus.count} trees</p>
+                <p className="text-sm text-black">Average Height: {selectedGenus.avgHeight.toFixed(1)} ft</p>
+                <p className="text-sm text-black">Species Diversity: {selectedGenus.speciesCount} varieties</p>
+                <p className="text-sm text-black">Average Spread: {selectedGenus.avgSpread.toFixed(1)} ft</p>
               </div>
             ) : (
               <p className="text-sm italic text-green-800">Hover over trees to explore...</p>
             )}
           </div>
+
+          {/* Color Legend */}
+          {/* {showLegend && <ColorLegend getTreeColor={getTreeColor} />} */}
           
+          {/* Tree Visualization */}
           <div className="flex flex-wrap gap-6 justify-center items-end min-h-[28rem] pt-20 pb-8">
-            {treeData.map((genus, i) => (
+            {sortedAndFilteredTrees.map((genus) => (
               <div
                 key={genus.genus}
                 className="flex flex-col items-center transition-all duration-300 ease-in-out hover:scale-110 hover:-translate-y-2 cursor-pointer group"
@@ -158,6 +227,7 @@ const TreeForestViz = () => {
                 <TreeIcon
                   size={getTreeSize(genus.avgHeight)}
                   color={getTreeColor(genus.count)}
+                  isHighlighted={searchTerm && genus.genus.toLowerCase().includes(searchTerm.toLowerCase())}
                 />
                 <span className="text-xs font-medium mt-2 rotate-45 origin-left text-green-800 opacity-0 group-hover:opacity-100 transition-opacity">
                   {genus.genus}
