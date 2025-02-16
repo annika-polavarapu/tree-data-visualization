@@ -1,9 +1,9 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 import Papa from 'papaparse';
-import { Search, SortAsc, Info } from 'lucide-react';
+import { Search } from 'lucide-react';
 
-const TreeIcon = ({ size, color, isHighlighted }) => (
+const TreeIcon = ({ size, color, isHighlighted }: any) => (
   <svg 
     width={size} 
     height={size * 1.4} 
@@ -64,7 +64,6 @@ const TreeForestViz = () => {
   const [selectedGenus, setSelectedGenus] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [sortBy, setSortBy] = useState("count");
-  const [showLegend, setShowLegend] = useState(true);
   
   useEffect(() => {
     const loadData = async () => {
@@ -201,13 +200,7 @@ const TreeForestViz = () => {
             <option value="height">Sort by Height</option>
             <option value="diversity">Sort by Species Count</option>
             <option value="spread">Sort by Canopy Spread</option>
-          </select>
-          {/* <button
-            className="p-2 rounded-lg border border-gray-200 hover:bg-gray-50"
-            onClick={() => setShowLegend(!showLegend)}
-          >
-            <Info size={20} className="text-gray-600" />
-          </button> */}
+          </select> 
         </div>
         
         <div className="relative min-h-[32rem] h-auto w-full rounded-lg p-6 bg-gradient-to-b from-sky-100 to-green-50 pt-32">
