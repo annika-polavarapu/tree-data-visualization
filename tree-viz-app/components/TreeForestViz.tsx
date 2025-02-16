@@ -76,7 +76,7 @@ const TreeForestViz = () => {
           dynamicTyping: true,
           skipEmptyLines: true
         });
-      
+  
         const genusData = {};
         result.data.forEach(tree => {
           if (!genusData[tree.Genus]) {
@@ -84,33 +84,47 @@ const TreeForestViz = () => {
               count: 0,
               totalHeight: 0,
               totalSpread: 0,
-              species: new Set()
+              species: new Set(),
+              commonNames: {}  // Track common names frequency
             };
           }
           genusData[tree.Genus].count++;
           genusData[tree.Genus].totalHeight += tree.Height || 0;
           genusData[tree.Genus].totalSpread += tree['Canopy Spread'] || 0;
           genusData[tree.Genus].species.add(tree.Species);
+          
+          const commonName = tree['Common Name'];
+          if (commonName) {
+            genusData[tree.Genus].commonNames[commonName] = 
+              (genusData[tree.Genus].commonNames[commonName] || 0) + 1;
+          }
         });
-      
+  
         const processedData = Object.entries(genusData)
-          .map(([genus, data]) => ({
-            genus,
-            count: data.count,
-            avgHeight: data.totalHeight / data.count,
-            avgSpread: data.totalSpread / data.count,
-            speciesCount: data.species.size
-          }))
+          .map(([genus, data]) => {
+            const mostCommonName = Object.entries(data.commonNames)
+              .sort((a, b) => b[1] - a[1])[0]?.[0] || "Unknown"; // Get most frequent common name
+  
+            return {
+              genus,
+              count: data.count,
+              avgHeight: data.totalHeight / data.count,
+              avgSpread: data.totalSpread / data.count,
+              speciesCount: data.species.size,
+              commonName: mostCommonName
+            };
+          })
           .filter(d => d.count > 0);
-      
+  
         setTreeData(processedData);
       } catch (error) {
         console.error('Error loading tree data:', error);
       }
     };
-    
+  
     loadData();
   }, []);
+  
 
   const getTreeColor = (count) => {
     const maxCount = Math.max(...treeData.map(d => d.count));
@@ -202,6 +216,7 @@ const TreeForestViz = () => {
             {selectedGenus ? (
               <div className="space-y-2">
                 <h3 className="font-serif text-lg font-bold text-green-800">{selectedGenus.genus}</h3>
+                <p className="text-sm text-black">Common Name: {selectedGenus.commonName}</p>
                 <p className="text-sm text-black">Population: {selectedGenus.count} trees</p>
                 <p className="text-sm text-black">Average Height: {selectedGenus.avgHeight.toFixed(1)} ft</p>
                 <p className="text-sm text-black">Species Diversity: {selectedGenus.speciesCount} varieties</p>
