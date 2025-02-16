@@ -84,7 +84,7 @@ const TreeForestViz = () => {
               totalHeight: 0,
               totalSpread: 0,
               species: new Set(),
-              commonNames: {}  // Track common names frequency
+              commonNames: {} 
             };
           }
           genusData[tree.Genus].count++;
@@ -102,7 +102,7 @@ const TreeForestViz = () => {
         const processedData = Object.entries(genusData)
           .map(([genus, data]) => {
             const mostCommonName = Object.entries(data.commonNames)
-              .sort((a, b) => b[1] - a[1])[0]?.[0] || "Unknown"; // Get most frequent common name
+              .sort((a, b) => b[1] - a[1])[0]?.[0] || "Unknown";
   
             return {
               genus,

@@ -1,0 +1,16 @@
+These are the main prompts used to help create this data visualization. Most outputs were altered for accuracy and specificity. 
+
+1. Use create react app to create a barebones webpage with a title and main area to store tree icons.
+
+2. Explain how to use papaparse to gather data from a CSV file.
+
+3. Given that you have the variables count, height, spread, species, and common name, generate processed tree data that includes
+average height, spread, species count and the most common name
+
+4. Creat an html element to use as an icon for trees. Make it artsy and I want variables that can be changed later for size and 
+color. Also add a isHighlighted variable to know when the tree is hovered over.
+
+5. Given this code, render a UI that looks simplistic. Add functionality for searching and sorting by different variables. I want 
+each tree icon to represent a different genus and the size of each icon to be proportional to the average height of that genus.
+The color intensity should indicate the population, and the hover effect should make the info panel pop up with data about that 
+tree. 
