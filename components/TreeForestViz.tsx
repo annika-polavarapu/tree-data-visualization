@@ -42,23 +42,6 @@ const TreeIcon = ({ size, color, isHighlighted }: any) => (
   </svg>
 );
 
-// const ColorLegend = ({ getTreeColor }) => (
-//   <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm p-4 rounded-lg shadow-lg">
-//     <h4 className="text-sm font-semibold mb-2 text-black">Population Ranges</h4>
-//     <div className="space-y-1">
-//       {[9, 8, 7, 6, 5, 4, 3, 2, 1, 0].map(i => (
-//         <div key={i} className="flex items-center gap-2">
-//           <div 
-//             className="w-4 h-4 rounded"
-//             style={{ backgroundColor: getTreeColor(i * 0.1 + 0.05) }}
-//           />
-//           <span className="text-xs text-black">{i * 10}-{(i + 1) * 10}%</span>
-//         </div>
-//       ))}
-//     </div>
-//   </div>
-// );
-
 const TreeForestViz = () => {
   const [treeData, setTreeData] = useState([]);
   const [selectedGenus, setSelectedGenus] = useState(null);
@@ -219,9 +202,6 @@ const TreeForestViz = () => {
               <p className="text-sm italic text-green-800">Hover over trees to explore...</p>
             )}
           </div>
-
-          {/* Color Legend */}
-          {/* {showLegend && <ColorLegend getTreeColor={getTreeColor} />} */}
           
           {/* Tree Visualization */}
           <div className="flex flex-wrap gap-6 justify-center items-end min-h-[28rem] pt-20 pb-8">
@@ -246,7 +226,7 @@ const TreeForestViz = () => {
         </div>
         
         <div className="mt-6 text-sm text-gray-600 text-center italic">
-          A living visualization of our campus canopy. Each tree represents a genus, 
+          A visualization of our campus canopy. Each tree represents a genus, 
           with size reflecting average height and color intensity showing population.
         </div>
       </div>
