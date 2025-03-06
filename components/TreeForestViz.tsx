@@ -160,7 +160,7 @@ const TreeForestViz = () => {
   return (
     <div className="max-w-6xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden">
       <div className="p-8">
-        <h1 className="text-center text-3xl font-serif mb-8 text-black">Forest of Knowledge: UCB Campus Trees</h1>
+        <h1 className="text-center text-3xl font-serif mb-8 text-black">Forest of Knowledge: CU Boulder Campus Trees</h1>
         
         {/* Controls */}
         <div className="flex gap-4 mb-6">
