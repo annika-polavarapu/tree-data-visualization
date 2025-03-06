@@ -226,7 +226,7 @@ const TreeForestViz = () => {
         </div>
         
         <div className="mt-6 text-sm text-gray-600 text-center italic">
-          A visualization of our campus canopy. Each tree represents a genus, 
+          A visualization of our campus canopy. Hover over trees to explore. Each tree represents a genus, 
           with size reflecting average height and color intensity showing population.
         </div>
       </div>
